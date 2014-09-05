@@ -33,4 +33,35 @@ public class MoneyTest {
 		Money reduced = bank.reduce(sum, "USD");
 		assertEquals(reduced, Money.dollar(10));
 	}
+	
+	@Test
+	public void testPlusReturnsSum() {
+		Money five = Money.dollar(5);
+		Money six = Money.dollar(6);
+		Expression result = five.plus(six);
+		Sum sum = (Sum) result;
+		assertEquals(five, sum.augend);
+		assertEquals(six, sum.addend);
+	}
+	
+	@Test
+	public void testReduceSum() {
+		Expression sum = new Sum(Money.dollar(4), Money.dollar(5));
+		Bank bank = new Bank();
+		Money result = bank.reduce(sum, "USD");
+		assertEquals(result, Money.dollar(9));
+	}
+	
+	@Test
+	public void testReduceMoneyDifferentCurrency() {
+		Bank bank = new Bank();
+		bank.addRate("CHF", "USD", 2);
+		Money result = bank.reduce(Money.franc(2), "USD");
+		assertEquals(result, Money.dollar(1));
+	}
+	
+	@Test
+	public void testIdentityRate() {
+		assertEquals(1, new Bank().rate("USD", "USD"));
+	}
 }
